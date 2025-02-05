@@ -24,4 +24,7 @@ app.listen(PORT, () => {
 });
 
 
-// http://localhost:3000/generate?url=https://maisteroriginal.com/en/products/thermal-insulation-materials/fiberglass-%d0%bc%d0%b0%d0%b9%d1%81%d1%82%d0%b5%d1%80-original-160/
+// http://localhost:3000/generate?url=
+// Запуск сервера Чтобы запустить API, напишите в терминале эту команду cd qr-api , node index.js и нажмите Enter.
+// Если всё верно — увидите сообщение о том, что сервер запущен. ^Сервер запущен по адресу http://localhost:3000^
+
