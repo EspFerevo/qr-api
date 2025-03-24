@@ -20,9 +20,7 @@ npm init -y
 
 npm install express qrcode
 
-3. Создание файла index.js и добавление кода
-
-4. Запуск сервера
+3. Запуск сервера
 
 node index.js
 
@@ -34,7 +32,7 @@ node index.js
 
 Откройте браузер и перейдите по адресу:
 
-http://localhost:3000/generate?url=https://htmlacademy.ru
+http://localhost:3000/generate?url= ссылка на Ваш сайт.
 
 Вы получите QR-код для указанной ссылки.
 
