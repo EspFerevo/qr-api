@@ -25,6 +25,3 @@ app.get('/generate', async (req, res) => {
 app.listen(PORT, () => {
   console.log(`Сервер запущен по адресу http://localhost:${PORT}`);
 });
-
-
-// http://localhost:3000/generate?url=
