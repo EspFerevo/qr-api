@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>QR Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap");
+      body {
+        font-family: "Inter", sans-serif;
+      }
+    </style>
+  </head>
+  <body class="bg-slate-50 flex items-center justify-center min-h-screen">
+    <div
+      class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md border border-slate-100"
+    >
+      <h1 class="text-2xl font-bold text-slate-800 mb-6 text-center">
+        Генератор QR-кода
+      </h1>
+
+      <div class="space-y-4">
+        <input
+          type="text"
+          id="urlInput"
+          placeholder="Введите ссылку (например, https://google.com)"
+          class="w-full px-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+        />
+
+        <button
+          onclick="generateQR()"
+          id="btn"
+          class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition-colors shadow-lg shadow-blue-200"
+        >
+          Создать QR-код
+        </button>
+      </div>
+
+      <div id="resultContainer" class="mt-8 hidden flex flex-col items-center">
+        <div
+          class="p-4 bg-slate-50 rounded-xl border border-dashed border-slate-300"
+        >
+          <img
+            id="qrImage"
+            src=""
+            alt="QR Code"
+            class="max-w-full h-auto rounded-lg"
+          />
+        </div>
+        <p class="text-sm text-slate-500 mt-4">
+          Нажмите правой кнопкой, чтобы сохранить
+        </p>
+      </div>
+    </div>
+
+    <script>
+      async function generateQR() {
+        const url = document.getElementById("urlInput").value;
+        const btn = document.getElementById("btn");
+        const resultContainer = document.getElementById("resultContainer");
+        const qrImage = document.getElementById("qrImage");
+
+        if (!url) return;
+
+        btn.disabled = true;
+        btn.innerText = "Генерация...";
+
+        try {
+          // Запрос идет на тот же сервер, где лежит HTML
+          const response = await axios.get("/api/generate", {
+            params: { url: url },
+          });
+
+          qrImage.src = response.data.result;
+          resultContainer.classList.remove("hidden");
+        } catch (error) {
+          alert("Ошибка соединения с сервером");
+        } finally {
+          btn.disabled = false;
+          btn.innerText = "Создать QR-код";
+        }
+      }
+    </script>
+  </body>
+</html>

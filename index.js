@@ -1,27 +1,35 @@
 const express = require('express');
 const QRCode = require('qrcode');
-const cors = require('cors')
+const path = require('path');
+const cors = require('cors');
 
 const app = express();
 const PORT = 3000;
 
 app.use(cors());
+app.use(express.json());
 
-app.get('/generate', async (req, res) => {
-  const url = req.query.url;
+// Раздаем статические файлы (HTML, CSS, JS) из папки public
+app.use(express.static(path.join(__dirname, 'public')));
 
-  if (!url) {
-    return res.status(400).send('URL не указан.');
-  }
+// API роут для генерации QR
+app.get('/api/generate', async (req, res) => {
+  const { url } = req.query;
+  if (!url) return res.status(400).json({ error: 'URL не указан.' });
 
   try {
-    const qr = await QRCode.toDataURL(url);
-    res.send(`<img src="${qr}" />`);
+    const qrDataUrl = await QRCode.toDataURL(url, {
+      width: 400,
+      margin: 2,
+      color: { dark: '#1e293b', light: '#ffffff' }
+    });
+    res.json({ result: qrDataUrl });
   } catch (err) {
-    res.status(500).send('Ошибка при создании QR-кода.');
+    res.status(500).json({ error: 'Ошибка генерации' });
   }
 });
 
+// Запуск
 app.listen(PORT, () => {
-  console.log(`Сервер запущен по адресу http://localhost:${PORT}`);
+  console.log(`Проект запущен! Откройте: http://localhost:${PORT}`);
 });
