@@ -16,10 +16,10 @@ jobs:
         run: |
           # 1. Синхронизируем новые файлы из GitHub в рабочую папку на ВМ
           # Исключаем node_modules, чтобы Docker сам их устанавливал внутри
-          rsync -avz --delete --exclude 'node_modules' --exclude '.git' ./ /opt/sites/qr-api/
+          rsync -avz --delete --exclude 'node_modules' --exclude '.git' ./ /opt/www/git/qrapi
           
           # 2. Переходим в папку проекта
-          cd /opt/sites/qr-api
+          cd /opt/www/git/qrapi
           
           # 3. Запускаем/Перезапускаем контейнер. 
           # При рестарте он сам сделает npm install для новых пакетов и подхватит свежий index.js
