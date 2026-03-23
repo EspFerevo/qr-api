@@ -1,23 +1,27 @@
-name: Deploy API to Server
+name: Deploy Node.js QR API
 
-# Запускать скрипт только при пуше в ветку main (или master, проверьте как она у вас называется)
 on:
   push:
-    branches:
-      - main 
+    branches: [ "main" ]
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
+
     steps:
-      - name: Deploy to VPS
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.SERVER_IP }}
-          username: ${{ secrets.SERVER_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          # Команды, которые робот выполнит на сервере
-          script: |
-            cd /opt/git/qr-api
-            git pull
-            docker compose up -d --build
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Update files and restart API
+        run: |
+          # 1. Синхронизируем новые файлы из GitHub в рабочую папку на ВМ
+          # Исключаем node_modules, чтобы Docker сам их устанавливал внутри
+          rsync -avz --delete --exclude 'node_modules' --exclude '.git' ./ /opt/sites/qr-api/
+          
+          # 2. Переходим в папку проекта
+          cd /opt/sites/qr-api
+          
+          # 3. Запускаем/Перезапускаем контейнер. 
+          # При рестарте он сам сделает npm install для новых пакетов и подхватит свежий index.js
+          docker compose up -d --build
+          docker compose restart
