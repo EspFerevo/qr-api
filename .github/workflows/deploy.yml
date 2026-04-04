@@ -1,0 +1,37 @@
+name: Deploy QR API
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+
+      - name: 📤 Copy files to Server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          source: "."
+          target: "/opt/www/qr-api"
+
+      - name: 🚀 Restart Docker
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            cd /opt/www/qr-api
+            # Если ты хочешь обновлять .env из GitHub Secrets:
+            echo "${{ secrets.PROD_CONFIG }}" > .env
+
+            # Поднимаем сервис
+            docker compose up -d --build
+            docker image prune -f
