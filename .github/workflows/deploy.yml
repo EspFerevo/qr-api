@@ -9,10 +9,10 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: 📥 Checkout
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: 📤 Copy files to /opt/www/qr-api
+      - name: Copy files to /opt/www/qr-api
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -29,7 +29,6 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           script: |
             cd /opt/www/qr-api
-            # Запускаем docker compose, прокидывая секреты в окружение
             DB_HOST="${{ secrets.DB_HOST }}" \
             DB_PASSWORD="${{ secrets.DB_PASSWORD }}" \
             docker compose up -d --build
