@@ -1,0 +1,13 @@
+services:
+  qr-api:
+    build: .
+    container_name: qr-api
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+    # Optional: Volume for logs if needed
+    # volumes:
+    #   - ./logs:/app/logs
